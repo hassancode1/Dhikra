@@ -9,6 +9,7 @@ export default defineContentScript({
   async main(ctx) {
     console.log("Hello content script.");
     let patientName = "";
+    let accessToken = "";
 
     const ui = await createShadowRootUi(ctx, {
       name: "wxt-react-example",
@@ -27,7 +28,11 @@ export default defineContentScript({
 
         const root = ReactDOM.createRoot(wrapper);
         root.render(
-          <App patientName={patientName} onClose={() => root.unmount()} />
+          <App
+            accessToken={accessToken}
+            patientName={patientName}
+            onClose={() => root.unmount()}
+          />
         );
         return { root, wrapper };
       },
@@ -40,6 +45,7 @@ export default defineContentScript({
     browser.runtime.onMessage.addListener((event) => {
       if (event.action === "MOUNT_WIDGET") {
         patientName = event.patientName ?? "";
+        accessToken = event.accessToken ?? "";
         ui.mount();
       }
       return true;

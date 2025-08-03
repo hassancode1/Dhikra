@@ -1,23 +1,28 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PersistentRecordingUI from "./PersistantRecordingUi";
 import { DoctorService } from "@/generated";
+import axios from "axios";
 
 const App = ({
   patientName,
   onClose,
+  accessToken,
 }: {
   patientName: string;
   onClose: () => void;
+  accessToken: string;
 }) => {
   type RecordingState =
     | "initial"
     | "recording"
     | "paused"
     | "stopped"
+    | "uploading"
     | "review";
   const [recordingState, setRecordingState] =
-    useState<RecordingState>("review");
+    useState<RecordingState>("initial");
   const [time, setTime] = useState(0);
+  const [noteId, setNoteId] = useState("");
   const [transcript, setTranscript] = useState("");
   const [error, setError] = useState("");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -25,12 +30,21 @@ const App = ({
   const chunks = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const accessToken = getLocalAccessToken();
+  // const { authState } = useAuth();
+  // console.log(authState);
+  const startTimer = () => {
+    if (timerRef.current) return;
+    timerRef.current = setInterval(() => {
+      setTime((t) => t + 1);
+    }, 1000);
+  };
 
-  const startTimer = () =>
-    (timerRef.current = setInterval(() => setTime((t) => t + 1), 1000));
   const stopTimer = () => {
-    clearInterval(timerRef.current!);
-    timerRef.current = null;
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
   const resetTimer = () => {
     stopTimer();
@@ -57,6 +71,7 @@ const App = ({
       startTimer();
     } catch (err) {
       console.error("Mic error:", err);
+      onClose();
     }
   };
 
@@ -81,8 +96,8 @@ const App = ({
       mediaRecorderRef.current.stop();
       mediaRecorderRef.current.stream.getTracks().forEach((t) => t.stop());
     }
-    setRecordingState("stopped");
     stopTimer();
+    setRecordingState("stopped");
   };
 
   const newRecording = () => {
@@ -92,6 +107,7 @@ const App = ({
   };
   const saveAndContinue = async () => {
     setIsSubmitting(true);
+    setRecordingState("uploading");
     setError("");
     try {
       const audioBlob = new Blob(chunks.current, { type: "audio/webm" });
@@ -99,20 +115,46 @@ const App = ({
       const formData = new FormData();
       formData.append("audio_file", audioBlob);
       formData.append("patient_name", patientName);
-
-      const res = await DoctorService.uploadAudioDoctorsUploadAudioPost({
+      const res = await axios.post(
+        "https://api.saasprohealths.com/doctors/upload/audio",
         formData,
-      });
-
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       // setTranscript(res.transcript || "");
-      console.log(res);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       setRecordingState("review");
+      setNoteId(res?.data?.data?.id);
+      console.log(res.data?.data);
     } catch (e: any) {
       setError(e?.message || "Upload failed");
     } finally {
       setIsSubmitting(false);
     }
   };
+  const getNoteById = async (noteId: string) => {
+    const res = await axios.get(
+      `https://api.saasprohealths.com/doctors/visit/${noteId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data, " NOTES");
+  };
+
+  // useEffect(() => {
+  //   if (!noteId) return;
+  //   const interval = setInterval(() => {
+  //     getNoteById(noteId);
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, [noteId]);
 
   return (
     <>

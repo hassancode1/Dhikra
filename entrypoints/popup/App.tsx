@@ -8,7 +8,7 @@ import RecordPage from "./record-sreen";
 function App() {
   return (
     <>
-      {/* <Routes>
+      <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/record"
@@ -27,8 +27,8 @@ function App() {
             </PublicRoute>
           }
         />
-      </Routes> */}
-      <RecordPage />
+      </Routes>
+      {/* <RecordPage /> */}
     </>
   );
 }

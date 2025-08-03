@@ -15,7 +15,13 @@ import {
   Download,
 } from "lucide-react";
 
-type RecordingState = "initial" | "recording" | "paused" | "stopped" | "review";
+type RecordingState =
+  | "initial"
+  | "recording"
+  | "paused"
+  | "stopped"
+  | "review"
+  | "uploading";
 
 interface Props {
   startRecording: () => void;
@@ -75,7 +81,7 @@ export default function PersistentRecordingUI(props: Props) {
 
   if (recordingState === "initial") startRecording();
   useEffect(() => {
-    if (isSubmitting) {
+    if (recordingState === "uploading") {
       let messageIndex = 0;
       let progress = 0;
       const interval = setInterval(() => {
@@ -94,7 +100,7 @@ export default function PersistentRecordingUI(props: Props) {
 
       return () => clearInterval(interval);
     }
-  }, [isSubmitting]);
+  }, [recordingState]);
   useEffect(() => {
     const initialNote = `Patient: ${patientName}
 Date: ${new Date().toLocaleDateString()}
@@ -174,26 +180,28 @@ Discussed headache triggers, importance of regular sleep schedule, and when to s
     );
   }
 
-  if (isSubmitting) {
-    <div className="fixed bottom-4 left-4 z-50 font-sans">
-      <div className="w-80 h-[300px] bg-white rounded-lg shadow-lg border border-gray-200 flex flex-col"></div>
+  if (recordingState === "uploading") {
+    return (
       <div className="fixed bottom-4 left-4 z-50 font-sans">
-        <div className="w-80 h-[300px] bg-white rounded-lg shadow-lg border border-gray-200 flex flex-col justify-center items-center mx-auto">
-          <Lottie
-            autoplay
-            loop
-            animationData={loader}
-            style={{ width: 120, height: 120 }}
-          />
+        <div className="w-80 h-[300px] bg-white rounded-lg shadow-lg border border-gray-200 flex flex-col"></div>
+        <div className="fixed bottom-4 left-4 z-50 font-sans">
+          <div className="w-80 h-[300px] bg-white rounded-lg shadow-lg border border-gray-200 flex flex-col justify-center items-center mx-auto">
+            <Lottie
+              autoplay
+              loop
+              animationData={loader}
+              style={{ width: 120, height: 120 }}
+            />
 
-          <div className="text-center mt-4 space-y-3">
-            <h3 className="text-sm font-normal text-gray-800">
-              {loadingMessage}
-            </h3>
+            <div className="text-center mt-4 space-y-3">
+              <h3 className="text-sm font-normal text-gray-800">
+                {loadingMessage}
+              </h3>
+            </div>
           </div>
         </div>
       </div>
-    </div>;
+    );
   }
   if (recordingState === "review") {
     return (

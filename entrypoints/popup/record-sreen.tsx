@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
 import { Mic, User, Activity } from "lucide-react";
+import { getLocalAccessToken } from "@/lib/utils";
 
 const RecordPage = () => {
+  const accessToken = getLocalAccessToken();
   const [patientName, setPatientName] = useState("");
 
   const handleRecord = async () => {
@@ -51,6 +53,7 @@ const RecordPage = () => {
       await browser.runtime.sendMessage({
         action: "MOUNT_WIDGET",
         patientName: patientName,
+        accessToken: accessToken,
       });
     } catch (error) {
       console.error("Error sending MOUNT_WIDGET message:", error);
