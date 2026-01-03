@@ -4,45 +4,59 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Settings, Clock, Repeat } from "lucide-react";
 
+// Time interval options in minutes
+const INTERVAL_OPTIONS = [
+  { value: 10, label: "Every 10 minutes" },
+  { value: 30, label: "Every 30 minutes" },
+  { value: 60, label: "Every 1 hour" },
+  { value: 120, label: "Every 2 hours" },
+  { value: 180, label: "Every 3 hours" },
+  { value: 240, label: "Every 4 hours" },
+  { value: 360, label: "Every 6 hours" },
+  { value: 480, label: "Every 8 hours" },
+  { value: 720, label: "Every 12 hours" },
+];
+
 const DhikrSettings = () => {
-  const [frequency, setFrequency] = useState<number>(1);
+  const [intervalMinutes, setIntervalMinutes] = useState<number>(60); // Default: 1 hour
   const [duration, setDuration] = useState<number>(10);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
-    browser.storage.local.get(["dhikrFrequency", "dhikrDuration", "dhikrActive"]).then((result) => {
-      if (result.dhikrFrequency) setFrequency(result.dhikrFrequency);
-      if (result.dhikrDuration) setDuration(result.dhikrDuration);
-      if (result.dhikrActive !== undefined) setIsActive(result.dhikrActive);
-    });
+    browser.storage.local
+      .get(["dhikrIntervalMinutes", "dhikrDuration", "dhikrActive"])
+      .then((result) => {
+        if (result.dhikrIntervalMinutes)
+          setIntervalMinutes(result.dhikrIntervalMinutes);
+        if (result.dhikrDuration) setDuration(result.dhikrDuration);
+        if (result.dhikrActive !== undefined) setIsActive(result.dhikrActive);
+      });
   }, []);
 
   const handleSave = async () => {
     setStatus("Starting...");
-    console.log("POPUP: Start clicked - frequency:", frequency, "duration:", duration);
-    
     try {
-      // Save to storage
       await browser.storage.local.set({
-        dhikrFrequency: frequency,
+        dhikrIntervalMinutes: intervalMinutes,
         dhikrDuration: duration,
         dhikrActive: true,
       });
       setIsActive(true);
-      
-      // Send message to background script
-      const message = { 
+
+      const message = {
         action: "START_DHIKR",
-        frequency,
+        intervalMinutes,
         duration,
       };
-      
-      console.log("POPUP: Sending to background:", message);
-      const response = await browser.runtime.sendMessage(message);
-      console.log("POPUP: Background response:", response);
-      
-      setStatus("✓ Started! Modal should appear on open tabs.");
+
+      await browser.runtime.sendMessage(message);
+      setStatus(
+        "✓ Started! Modal will show every " +
+          INTERVAL_OPTIONS.find(
+            (opt) => opt.value === intervalMinutes
+          )?.label.toLowerCase()
+      );
       setTimeout(() => setStatus(""), 3000);
     } catch (error) {
       console.error("POPUP: Error:", error);
@@ -52,22 +66,19 @@ const DhikrSettings = () => {
   };
 
   const handleStop = async () => {
-    console.log("POPUP: Stop clicked");
     setStatus("Stopping...");
-    
+
     try {
       await browser.storage.local.set({
         dhikrActive: false,
       });
       setIsActive(false);
-      
+
       await browser.runtime.sendMessage({ action: "STOP_DHIKR" });
-      console.log("POPUP: Stop message sent");
-      
+
       setStatus("✓ Stopped");
       setTimeout(() => setStatus(""), 2000);
     } catch (error) {
-      console.error("POPUP: Stop error:", error);
       setStatus("✗ Error stopping");
       setTimeout(() => setStatus(""), 3000);
     }
@@ -75,15 +86,12 @@ const DhikrSettings = () => {
 
   const handleTest = async () => {
     setStatus("Testing...");
-    console.log("POPUP: Test clicked - duration:", duration);
-    
+
     try {
-      // Send test message via background script
       await browser.runtime.sendMessage({
         action: "TEST_DHIKR",
         duration: duration,
       });
-      console.log("POPUP: Test message sent");
       setStatus("✓ Test sent! Check your open tabs.");
       setTimeout(() => setStatus(""), 3000);
     } catch (error: any) {
@@ -100,30 +108,41 @@ const DhikrSettings = () => {
           <Settings className="w-3.5 h-3.5 text-blue-600" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Dhikr Settings</h1>
+          <h1 className="text-xl font-semibold text-gray-900">
+            Dhikr Settings
+          </h1>
           <p className="text-xs text-gray-500">Configure dhikr reminders</p>
         </div>
       </div>
 
       <div className="space-y-4 flex-1">
         <div>
-          <Label htmlFor="frequency" className="text-sm font-medium flex items-center gap-2 mb-2">
+          <Label
+            htmlFor="interval"
+            className="text-sm font-medium flex items-center gap-2 mb-2"
+          >
             <Repeat className="w-4 h-4" />
-            Frequency (how many times)
+            How often to show
           </Label>
-          <Input
-            id="frequency"
-            type="number"
-            min="1"
-            value={frequency}
-            onChange={(e) => setFrequency(parseInt(e.target.value) || 1)}
-            className="h-9 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Enter frequency"
-          />
+          <select
+            id="interval"
+            value={intervalMinutes}
+            onChange={(e) => setIntervalMinutes(parseInt(e.target.value))}
+            className="w-full h-9 px-3 border border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 focus:outline-none text-sm bg-white"
+          >
+            {INTERVAL_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <Label htmlFor="duration" className="text-sm font-medium flex items-center gap-2 mb-2">
+          <Label
+            htmlFor="duration"
+            className="text-sm font-medium flex items-center gap-2 mb-2"
+          >
             <Clock className="w-4 h-4" />
             Duration (seconds to show)
           </Label>

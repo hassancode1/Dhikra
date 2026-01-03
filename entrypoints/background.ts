@@ -2,6 +2,7 @@ export default defineBackground(() => {
   console.log("=== Dhikr extension background script loaded ===");
 
   let dhikrIntervalId: NodeJS.Timeout | null = null;
+  let alarmName = "dhikr-reminder";
 
   // Function to show dhikr modal on all tabs
   const showDhikrToAllTabs = async (duration: number) => {
@@ -52,7 +53,7 @@ export default defineBackground(() => {
 
   // Function to start dhikr reminders
   const startDhikrReminders = async (
-    overrideFrequency?: number,
+    overrideIntervalMinutes?: number,
     overrideDuration?: number
   ) => {
     console.log("startDhikrReminders called");
@@ -63,36 +64,37 @@ export default defineBackground(() => {
       dhikrIntervalId = null;
     }
 
-    // Get settings from storage
     const result = await browser.storage.local.get([
       "dhikrActive",
-      "dhikrFrequency",
+      "dhikrIntervalMinutes",
       "dhikrDuration",
     ]);
 
-    const frequency = overrideFrequency ?? result.dhikrFrequency ?? 1;
+    const intervalMinutes =
+      overrideIntervalMinutes ?? result.dhikrIntervalMinutes ?? 60;
     const duration = overrideDuration ?? result.dhikrDuration ?? 10;
     const isActive =
-      overrideFrequency !== undefined ? true : result.dhikrActive;
+      overrideIntervalMinutes !== undefined ? true : result.dhikrActive;
 
-    console.log("Settings:", { frequency, duration, isActive });
+    console.log("Settings:", { intervalMinutes, duration, isActive });
 
-    if (isActive && frequency && duration) {
-      // Calculate interval (1 hour / frequency)
-      const intervalMs = (60 * 60 * 1000) / frequency;
-      console.log(
-        `Setting interval: ${intervalMs}ms (${frequency} times/hour)`
-      );
+    if (isActive && intervalMinutes && duration) {
+      // Convert minutes to milliseconds
+      const intervalMs = intervalMinutes * 60 * 1000;
 
-      // Show immediately
       showDhikrToAllTabs(duration);
 
-      // Set up recurring interval
+      try {
+        await browser.alarms.clear(alarmName);
+      } catch (e) {}
+
       dhikrIntervalId = setInterval(() => {
         showDhikrToAllTabs(duration);
       }, intervalMs);
 
-      console.log("✓ Reminders started");
+      console.log(
+        `✓ Reminders started - showing every ${intervalMinutes} minutes`
+      );
     } else {
       console.log("✗ Not starting - missing settings");
     }
@@ -104,8 +106,14 @@ export default defineBackground(() => {
     if (dhikrIntervalId) {
       clearInterval(dhikrIntervalId);
       dhikrIntervalId = null;
-      console.log("✓ Reminders stopped");
     }
+    // Clear alarms
+    try {
+      browser.alarms.clear(alarmName);
+    } catch (e) {
+      // Alarms API might not be available
+    }
+    console.log("✓ Reminders stopped");
   };
 
   // Listen for messages from popup
@@ -113,7 +121,7 @@ export default defineBackground(() => {
     console.log("📨 Message received:", message.action);
 
     if (message.action === "START_DHIKR") {
-      startDhikrReminders(message.frequency, message.duration);
+      startDhikrReminders(message.intervalMinutes, message.duration);
       sendResponse({ success: true });
     } else if (message.action === "STOP_DHIKR") {
       stopDhikrReminders();
@@ -131,7 +139,7 @@ export default defineBackground(() => {
     if (areaName === "local") {
       if (
         changes.dhikrActive ||
-        changes.dhikrFrequency ||
+        changes.dhikrIntervalMinutes ||
         changes.dhikrDuration
       ) {
         const newActive = changes.dhikrActive?.newValue;
