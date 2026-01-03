@@ -1,54 +1,80 @@
 import "./style.css";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import DhikrModal from "./DhikrModal";
 
 export default defineContentScript({
   matches: ["<all_urls>"],
   cssInjectionMode: "ui",
 
   async main(ctx) {
-    console.log("Hello content script.");
-    let patientName = "";
-    let accessToken = "";
+    console.log("Dhikr content script loaded.");
+    let dhikrModalRoot: ReactDOM.Root | null = null;
+    let dhikrModalWrapper: HTMLDivElement | null = null;
+    let isClosing = false;
 
-    const ui = await createShadowRootUi(ctx, {
-      name: "wxt-react-example",
-      position: "inline",
-      anchor: "body",
-      append: "first",
-      onMount: (container) => {
-        const wrapper = document.createElement("div");
-        Object.assign(wrapper.style, {
-          position: "fixed",
-          inset: "auto 0 0 0",
-          zIndex: "2147483647",
-          pointerEvents: "auto",
-        });
-        container.append(wrapper);
+    const closeModal = () => {
+      if (isClosing) return;
+      isClosing = true;
+      setTimeout(() => {
+        if (dhikrModalRoot) {
+          try {
+            dhikrModalRoot.unmount();
+          } catch (error) {
+            console.error("Error unmounting:", error);
+          }
+          dhikrModalRoot = null;
+        }
+        if (dhikrModalWrapper) {
+          dhikrModalWrapper.remove();
+          dhikrModalWrapper = null;
+        }
+        isClosing = false;
+      }, 0);
+    };
 
-        const root = ReactDOM.createRoot(wrapper);
-        root.render(
-          <App
-            accessToken={accessToken}
-            patientName={patientName}
-            onClose={() => root.unmount()}
-          />
-        );
-        return { root, wrapper };
-      },
-      onRemove: (elements) => {
-        elements?.root.unmount();
-        elements?.wrapper.remove();
-      },
-    });
-
-    browser.runtime.onMessage.addListener((event) => {
-      if (event.action === "MOUNT_WIDGET") {
-        patientName = event.patientName ?? "";
-        accessToken = event.accessToken ?? "";
-        ui.mount();
+    const showDhikrModal = (duration: number) => {
+      if (dhikrModalRoot || dhikrModalWrapper) {
+        closeModal();
+        setTimeout(() => {
+          createNewModal(duration);
+        }, 100);
+        return;
       }
-      return true;
+
+      createNewModal(duration);
+    };
+
+    const createNewModal = (duration: number) => {
+      if (!document.body) {
+        return;
+      }
+
+      const wrapper = document.createElement("div");
+      wrapper.id = "dhikr-modal-container";
+      wrapper.style.cssText =
+        "position: fixed; inset: 0; z-index: 999999999; pointer-events: auto;";
+      document.body.appendChild(wrapper);
+
+      const root = ReactDOM.createRoot(wrapper);
+      dhikrModalRoot = root;
+      dhikrModalWrapper = wrapper;
+
+      root.render(<DhikrModal duration={duration} onClose={closeModal} />);
+    };
+
+    // Listen for messages from background script to show modal
+    browser.runtime.onMessage.addListener((event, sender, sendResponse) => {
+      if (event.action === "SHOW_DHIKR_MODAL") {
+        const duration = event.duration || 10;
+        try {
+          showDhikrModal(duration);
+          sendResponse({ success: true });
+        } catch (error) {
+          sendResponse({ success: false, error: String(error) });
+        }
+        return true;
+      }
+      return false;
     });
   },
 });

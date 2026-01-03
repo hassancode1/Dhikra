@@ -13,9 +13,10 @@ export default defineConfig({
     },
   }),
   manifest: {
-    permissions: ["activeTab", "audioCapture"],
-    name: "SaasPro App",
-    description: "A Chome extension that helps you record clinical notes",
+    permissions: ["activeTab", "storage", "tabs", "scripting"],
+    name: "Dhikr Reminder",
+    description:
+      "A Chrome extension that reminds you with dhikr throughout the day",
     icons: { 32: "icon/icon32.png" },
   },
 });

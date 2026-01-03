@@ -1,0 +1,86 @@
+
+
+WXT 0.20.7                                                                                                              12:19:28 PM
+✔ Started dev server @ http://localhost:3000                                                                           12:19:29 PM
+ℹ Pre-rendering chrome-mv3 for development with Vite 6.3.5                                                             12:19:29 PM
+✔ Built extension in 1.908 s                                                                                           12:19:30 PM
+  ├─ .output/chrome-mv3-dev/manifest.json                1.28 kB 
+  ├─ .output/chrome-mv3-dev/popup.html                   854 B   
+  ├─ .output/chrome-mv3-dev/background.js                28.08 kB
+  ├─ .output/chrome-mv3-dev/chunks/popup-f02QKjXp.js     8.07 kB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.js   3.04 MB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.ome-mv3-dev/icon/128.png                 3.07 kB 
+  ├─ .output/chrome-mv3/icon/16.png                  559 B   
+  ├─ .output/chrome-mv3-dev/icon/32.png                  916 B   
+  ├─ .output/chrome-mv3-dev/icon/48.png                  1.33 kB 
+  ├─ .output/chrome-mv3-dev/icon/96.png                  2.37 kB 
+  ├─ .output/chrome-mv3-dev/icon/icon32.png              3.32 kB 
+  └─ .output/chrome-mv3-dev/wxt.svg                      1.07 kB 
+Σ Total size: 3.12 MB                                                     
+✔ Opened browser in 1.267 s                                                                                            12:19:32 PM
+ℹ Press o + enter to reopen the browser                                                                                12:19:32 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:21:16 PM
+✔ Reloaded extension                                                                                                   12:21:16 Pent/index.tsx                                                                               12:21:42 PM
+✔ Reloaded: content                                                                                                    12:21:44 PM
+ℹ Changed: entrypoints/content/index.tsx                                                                               12:21:45 PM
+✔ Reloaded: content                                                                                                    12:21:46 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:21:48 PM
+✔ Reloaded extension                                                                                                   12:21:48 PM
+ℹ Config changed, restarting server...                                                                                 1 Started dev server @ http://localhost:3000                                                                           12:21:52 PM
+ℹ Pre-rendering chrome-mv3 for development with Vite 6.3.5                                                             12:21:52 PM
+✔ Built extension in 1.531 s                                                                                           12:21:53 PM
+  ├─ .output/chrome-mv3-dev/manifest.json                1.28 kB 
+  ├─ .output/chrome-mv3-dev/popup.html                   854 B   
+  ├─ .output/chrome-mv3-dev/background.js                32.06 kB
+  ├─ .output/chrome-mv3-dev/chunks/popup-f02QKjXp.js     8.07 kB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.js   3.04 MB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.css  38.15 kB
+  ├─ .output/chrome-mv3-dev/icon/128.png                 3.07 kB 
+  ├─ .output/chrome-mv3-dev/icon/16.png                  559 B   
+  ├─ .output/chrome-mv3-dev/icon/32.png                  916 B   
+  ├─ .output/chrome-mv3-dev/icon/48.png                  1.33 kB 
+  ├─ .output/chrome-mv3-dev/icon/96.png                  2.37 kB 
+  ├─ .output/chrome-mv3-dev/icon/icon32.png              3.32 kB 
+  └─ .output/chrome-mv3-dev/wxt.svg                      1.07 kB 
+Σ Total size: 3.13 MB                                                     
+✔ Opened browser in 1.143 s                                                                                            12:21:54 PM
+ℹ Press o + enter to reopen the browser                                                                                12:21:54 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:21:57 PM
+✔ Reloaded extension                                                                                                   12:21:57 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:22:02 PM
+✔ Reloaded extension                                                                                                   12:22:02 PM
+ℹ Changed: entrypoints/background.ts                                        sion                                                                                                   12:22:05 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:22:11 PM
+✔ Reloaded extension                                                                                                   12:22:11 PM
+ℹ Changed: entrypoints/content/index.tsx                                                                               12:22:14 PM
+✔ Reloaded: content                                                                                                    12:22:16 PM
+ℹ Changed: entrypoints/content/index.tsx                                                                               12:23:08 PM
+✔ Reloaded: content                                                                                                    12:23:10 PM
+ℹ Config changed, restarting                                                                             12:23:10 PM
+✔ Started dev server @ http://localhost:3000                                                                           12:23:11 PM
+ℹ Pre-rendering chrome-mv3 for development with Vite 6.3.5                                                             12:23:11 PM
+✔ Built extension in 1.663 s                                                                                           12:23:12 PM
+  ├─ .output/chrome-mv3-dev/manifest.json                1.28 kB 
+  ├─ .output/chrome-mv3-dev/popup.html                   854 B   
+  ├─ .output/chrome-mv3-dev/background.js                32.53 kB
+  ├─ .output/chrome-mv3-dev/chunks/popup-f02QKjXp.js     8.07 kB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.js   3.04 MB 
+  ├─ .output/chrome-mv3-dev/content-scripts/content.css  39.41 kB
+  ├─ .output/chrome-mv3-dev/icon/128.png                 3.07 kB 
+  ├─ .outp         559 B   
+  ├─ .output/chrome-mv3-dev/icon/32.png                  916 B   
+  ├─ .output/chrome-mv3-dev/icon/48.png                  1.33 kB 
+  ├─ .output/chrome-mv3-dev/icon/96.png                  2.37 kB 
+  ├─ .output/chrome-mv3-dev/icon/icon32.png              3.32 kB 
+  └─ .output/chrome-mv3-dev/wxt.svg                      1.07 kB 
+Σ Total size: 3.13 MB                                                     
+✔ Opened browser in 1.017 s                                                                                            12:23:13 PM
+ℹ Press o + enter to reopen the browser                                                                                12:23:13 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:23:18 PM
+✔ Reloaded extension                                                                                                   12:23:18 PM
+ℹ Changed: entrypoints/backgro                                                          12:28:21 PM
+✔ Reloaded extension                                                                                                   12:28:21 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:28:25 PM
+✔ Reloaded extension                                                                                                   12:28:25 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:28:38 PM
+ℹ Changed: entrypoints/background.ts                                                                                   12:28:38 PM  ├─ .output/chrome-mv3-dev/content-scripts/content.ome-mv3-dev/icon/128.png                 3.07 kB 
