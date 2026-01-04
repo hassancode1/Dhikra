@@ -18,6 +18,12 @@ export default defineConfig({
     description:
       "A Chrome extension that reminds you with dhikr throughout the day",
     version: "1.0.0",
-    icons: { 32: "icon/icon32.png" },
+    icons: {
+      16: "icon/16.png",
+      32: "icon/32.png",
+      48: "icon/48.png",
+      96: "icon/96.png",
+      128: "icon/128.png",
+    },
   },
 });

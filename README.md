@@ -21,6 +21,10 @@ A beautiful Chrome extension that displays Islamic dhikr (remembrance) reminders
 
 ## 🚀 Installation
 
+### Chrome Web Store
+
+Coming soon! The extension will be available on the Chrome Web Store.
+
 ### Development Setup
 
 1. Clone the repository:
