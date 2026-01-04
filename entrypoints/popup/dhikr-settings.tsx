@@ -157,12 +157,12 @@ const DhikrSettings = () => {
           />
         </div>
 
-        <Button
+        {/* <Button
           onClick={handleTest}
           className="w-full h-9 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-sm font-medium rounded-md transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
         >
           Test Modal (Show Now)
-        </Button>
+        </Button> */}
 
         {!isActive ? (
           <Button
