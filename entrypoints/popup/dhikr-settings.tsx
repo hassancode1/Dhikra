@@ -172,12 +172,20 @@ const DhikrSettings = () => {
             Start Dhikr Reminders
           </Button>
         ) : (
-          <Button
-            onClick={handleStop}
-            className="w-full h-9 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm font-medium rounded-md transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
-          >
-            Stop Dhikr Reminders
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleSave}
+              className="flex-1 h-9 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-medium rounded-md transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              Change Settings
+            </Button>
+            <Button
+              onClick={handleStop}
+              className="flex-1 h-9 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm font-medium rounded-md transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+            >
+              Stop
+            </Button>
+          </div>
         )}
       </div>
 
