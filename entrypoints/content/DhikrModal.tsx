@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import axios from "axios";
 
 interface DhikrModalProps {
   duration: number;
@@ -13,86 +12,295 @@ interface DhikrData {
   source?: string;
 }
 
+const DHIKR_LIST: DhikrData[] = [
+  {
+    text: "SubhanAllah",
+    translation: "Glory be to Allah",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahi wa bihamdihi",
+    translation: "Glory be to Allah and all praise is due to Him",
+    source: "Hadith - Muslim",
+  },
+  {
+    text: "La ilaha illa Allah",
+    translation: "There is no god but Allah",
+    source: "Quran",
+  },
+  {
+    text: "Allahu Akbar",
+    translation: "Allah is the Greatest",
+    source: "Quran",
+  },
+  {
+    text: "Astaghfirullah",
+    translation: "I seek forgiveness from Allah",
+    source: "Hadith",
+  },
+  {
+    text: "La hawla wa la quwwata illa billah",
+    translation: "There is no power nor strength except with Allah",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbi ighfir li",
+    translation: "O my Lord, forgive me",
+    source: "Quran",
+  },
+  {
+    text: "Allahumma salli ala Muhammad",
+    translation: "O Allah, send blessings upon Muhammad",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahi wa bihamdihi SubhanAllahil Azeem",
+    translation:
+      "Glory be to Allah and all praise is due to Him, Glory be to Allah, the Great",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana atina fid dunya hasanatan wa fil akhirati hasanatan wa qina azaban nar",
+    translation:
+      "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire",
+    source: "Quran 2:201",
+  },
+  {
+    text: "Allahumma anta rabbi la ilaha illa anta khalaqtani wa ana abduka",
+    translation:
+      "O Allah, You are my Lord, there is no god but You. You created me and I am Your servant",
+    source: "Hadith",
+  },
+  {
+    text: "Hasbiyallahu la ilaha illa huwa alayhi tawakkaltu",
+    translation:
+      "Allah is sufficient for me. There is no god but Him. In Him I put my trust",
+    source: "Quran 9:129",
+  },
+  {
+    text: "Rabbi ij'alni muqeemas salati wa min zurriyyati",
+    translation:
+      "My Lord, make me an establisher of prayer, and from my descendants",
+    source: "Quran 14:40",
+  },
+  {
+    text: "Allahumma inni as'alukal afwa wal afiyah",
+    translation: "O Allah, I ask You for forgiveness and well-being",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahi walhamdulillahi wa la ilaha illa Allahu wallahu akbar",
+    translation:
+      "Glory be to Allah, all praise is due to Allah, there is no god but Allah, and Allah is the Greatest",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana taqabbal minna innaka antas samee'ul aleem",
+    translation:
+      "Our Lord, accept from us. Indeed, You are the Hearing, the Knowing",
+    source: "Quran 2:127",
+  },
+  {
+    text: "Allahumma barik li fi ma razaqtani",
+    translation: "O Allah, bless me in what You have provided me",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbi zidni ilma",
+    translation: "My Lord, increase me in knowledge",
+    source: "Quran 20:114",
+  },
+  {
+    text: "Allahumma inni a'udhu bika min azabi jahannam",
+    translation: "O Allah, I seek refuge in You from the punishment of Hell",
+    source: "Hadith",
+  },
+  {
+    text: "La ilaha illa anta subhanaka inni kuntu minaz zalimin",
+    translation:
+      "There is no god but You. Glory be to You. Indeed, I have been of the wrongdoers",
+    source: "Quran 21:87",
+  },
+  {
+    text: "Rabbi ishrah li sadri wa yassir li amri",
+    translation: "My Lord, expand for me my breast and ease for me my task",
+    source: "Quran 20:25-26",
+  },
+  {
+    text: "Allahumma rahmataka arju",
+    translation: "O Allah, I hope for Your mercy",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahil Azeem wa bihamdihi",
+    translation: "Glory be to Allah, the Great, and all praise is due to Him",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana la tu'akhidhna in naseena aw akhta'na",
+    translation:
+      "Our Lord, do not impose blame upon us if we have forgotten or erred",
+    source: "Quran 2:286",
+  },
+  {
+    text: "Allahumma antas salam wa minkas salam",
+    translation: "O Allah, You are Peace, and from You comes peace",
+    source: "Hadith",
+  },
+  {
+    text: "Hasbunallahu wa ni'mal wakeel",
+    translation:
+      "Allah is sufficient for us, and He is the best Disposer of affairs",
+    source: "Quran 3:173",
+  },
+  {
+    text: "Rabbi hab li hukma",
+    translation: "My Lord, grant me wisdom",
+    source: "Quran 26:83",
+  },
+  {
+    text: "Allahumma inni as'alukal huda wat tuqa",
+    translation: "O Allah, I ask You for guidance and piety",
+    source: "Hadith",
+  },
+  {
+    text: "Subhana rabbiyal a'la",
+    translation: "Glory be to my Lord, the Most High, the Most Exalted",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana amanna faghfir lana warhamna",
+    translation:
+      "Our Lord, we have believed, so forgive us and have mercy upon us",
+    source: "Quran 23:109",
+  },
+  {
+    text: "Allahumma a'idhni min sharri ma amiltu",
+    translation: "O Allah, protect me from the evil of what I have done",
+    source: "Hadith",
+  },
+  {
+    text: "La ilaha illa Allahu Muhammadur rasulullah",
+    translation:
+      "There is no god but Allah, Muhammad is the Messenger of Allah",
+    source: "Shahada",
+  },
+  {
+    text: "Rabbi a'udhu bika min hamazatish shayatin",
+    translation:
+      "My Lord, I seek refuge in You from the suggestions of the devils",
+    source: "Quran 23:97",
+  },
+  {
+    text: "Allahumma aslih li deeni alladhi huwa ismatu amri",
+    translation:
+      "O Allah, make my religion right for me, which is the safeguard of my affairs",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahi wa bihamdihi adada khalqihi",
+    translation:
+      "Glory be to Allah and all praise is due to Him, by the number of His creation",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana la tuzigh qulubana ba'da idh hadaytana",
+    translation:
+      "Our Lord, do not let our hearts deviate after You have guided us",
+    source: "Quran 3:8",
+  },
+  {
+    text: "Allahumma inni as'alukal jannah",
+    translation: "O Allah, I ask You for Paradise",
+    source: "Hadith",
+  },
+  {
+    text: "Hasbiyallahu wa ni'mal wakeel",
+    translation: "Allah is sufficient for me, and He is the best Trustee",
+    source: "Quran 3:173",
+  },
+  {
+    text: "Rabbi ij'alni shakiran li ni'matika",
+    translation: "My Lord, make me grateful for Your favor",
+    source: "Quran 27:19",
+  },
+  {
+    text: "Allahumma tahhir qalbi",
+    translation: "O Allah, purify my heart",
+    source: "Hadith",
+  },
+  {
+    text: "SubhanAllahi walhamdulillah",
+    translation: "Glory be to Allah and all praise is due to Allah",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana zalamna anfusana wa in lam taghfir lana wa tarhamna lanakunanna minal khasirin",
+    translation:
+      "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers",
+    source: "Quran 7:23",
+  },
+  {
+    text: "Allahumma a'idhni minal kasal",
+    translation: "O Allah, protect me from laziness",
+    source: "Hadith",
+  },
+  {
+    text: "La hawla wa la quwwata illa billahil a'liyyil azeem",
+    translation:
+      "There is no power nor strength except with Allah, the Most High, the Most Great",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbi irhamhuma kama rabbayani saghira",
+    translation:
+      "My Lord, have mercy upon them as they brought me up when I was small",
+    source: "Quran 17:24",
+  },
+  {
+    text: "Allahumma inni as'aluka sihatan fi iman",
+    translation: "O Allah, I ask You for health in faith",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbana amanna bima anzalta",
+    translation: "Our Lord, we have believed in what You revealed",
+    source: "Quran 3:53",
+  },
+  {
+    text: "Allahumma ya muqallibal qulub thabbit qalbi ala deenik",
+    translation:
+      "O Allah, O Turner of hearts, make my heart firm upon Your religion",
+    source: "Hadith",
+  },
+  {
+    text: "La ilaha illa Allahu wahdahu la sharika lahu",
+    translation: "There is no god but Allah alone, with no partner to Him",
+    source: "Hadith",
+  },
+  {
+    text: "Rabbi hab li min ladunka zurriyyatan tayyibah",
+    translation: "My Lord, grant me from Yourself a good offspring",
+    source: "Quran 3:38",
+  },
+  {
+    text: "Allahumma inni a'udhu bika minal hammi wal hazan",
+    translation: "O Allah, I seek refuge in You from grief and sadness",
+    source: "Hadith",
+  },
+];
+
 export default function DhikrModal({ duration, onClose }: DhikrModalProps) {
   const [dhikr, setDhikr] = useState<DhikrData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(duration);
 
   useEffect(() => {
-    const fetchDhikr = async () => {
-      setLoading(true);
-      setError(null);
-
-      const API_ENDPOINT = "https://api.alquran.cloud/v1/random";
-      const fallbackList = [
-        {
-          text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-          translation: "Glory be to Allah and all praise is due to him",
-          source: "Hadith - Muslim",
-        },
-        {
-          text: "لَا إِلَٰهَ إِلَّا اللَّهُ",
-          translation: "There is no god but Allah",
-          source: "Quran",
-        },
-        {
-          text: "اللَّهُ أَكْبَر",
-          translation: "Allah is the Greatest",
-          source: "Quran",
-        },
-        {
-          text: "أَسْتَغْفِرُ اللَّه",
-          translation: "I seek forgiveness from Allah",
-          source: "Hadith",
-        },
-        {
-          text: "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
-          translation: "There is no power nor strength except with Allah",
-          source: "Hadith",
-        },
-        {
-          text: "رَبِّ اغْفِرْ لِي",
-          translation: "O my Lord, forgive me",
-          source: "Quran",
-        },
-        {
-          text: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
-          translation: "O Allah, send blessings upon Muhammad",
-          source: "Hadith",
-        },
-      ];
-
-      try {
-        const response = await axios.get(API_ENDPOINT);
-        const apiData = response.data?.data;
-
-        if (apiData?.surah && apiData?.ayahs?.length > 0) {
-          const ayah = apiData.ayahs[0];
-          setDhikr({
-            text: ayah.text || "",
-            translation: ayah.translation || "",
-            source: `Quran - ${
-              apiData.surah.englishName || apiData.surah.name || ""
-            }`,
-          });
-        } else {
-          throw new Error("Invalid API response");
-        }
-        console.log("API fetch successful, dhikr set:", dhikr);
-      } catch (error) {
-        const randomDhikr =
-          fallbackList[Math.floor(Math.random() * fallbackList.length)];
-        setDhikr(randomDhikr);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDhikr();
+    // Randomly select a dhikr from the list
+    const randomDhikr =
+      DHIKR_LIST[Math.floor(Math.random() * DHIKR_LIST.length)];
+    setDhikr(randomDhikr);
   }, []);
 
-  // Handle closing when timer reaches 0
   useEffect(() => {
     if (timeRemaining === 0) {
       console.log("Timer reached 0, calling onClose");
@@ -103,8 +311,6 @@ export default function DhikrModal({ duration, onClose }: DhikrModalProps) {
       return () => clearTimeout(closeTimer);
     }
   }, [timeRemaining, onClose]);
-
-  // Timer countdown
   useEffect(() => {
     if (timeRemaining <= 0) {
       return;
@@ -198,34 +404,7 @@ export default function DhikrModal({ duration, onClose }: DhikrModalProps) {
 
         {/* Content */}
         <div style={{ paddingTop: "2rem", paddingBottom: "1.5rem" }}>
-          {loading ? (
-            <div className="text-center py-12">
-              <div
-                className="w-12 h-12 border-3 border-white border-t-transparent rounded-full animate-spin mx-auto mb-6"
-                style={{
-                  width: "3rem",
-                  height: "3rem",
-                  border: "3px solid rgba(255, 255, 255, 0.3)",
-                  borderTop: "3px solid white",
-                  borderRadius: "50%",
-                  animation: "spin 1s linear infinite",
-                }}
-              />
-              <p
-                style={{
-                  fontSize: "1.125rem",
-                  opacity: 0.9,
-                  fontWeight: "500",
-                }}
-              >
-                Loading dhikr...
-              </p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
-              <p style={{ fontSize: "1.125rem", opacity: 0.9 }}>{error}</p>
-            </div>
-          ) : dhikr ? (
+          {dhikr ? (
             <>
               <div
                 className="text-center mb-8"
@@ -233,15 +412,14 @@ export default function DhikrModal({ duration, onClose }: DhikrModalProps) {
               >
                 <h2
                   className="font-bold mb-6"
-                  dir="rtl"
                   style={{
                     fontSize: "6rem",
                     fontWeight: "700",
                     lineHeight: "1.2",
                     marginBottom: "2.5rem",
-                    letterSpacing: "0",
+                    letterSpacing: "0.05em",
                     fontFamily:
-                      '"Amiri", "Noto Sans Arabic", "Cairo", "Tajawal", "Almarai", "IBM Plex Sans Arabic", "Al Qalam Al Mushaf", "Arabic Typesetting", "Simplified Arabic", "Traditional Arabic", "Arial Unicode MS", "Segoe UI", "Tahoma", serif',
+                      'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     color: "white",
                   }}
                 >
@@ -262,7 +440,6 @@ export default function DhikrModal({ duration, onClose }: DhikrModalProps) {
             </>
           ) : null}
 
-          {/* Timer */}
           <div
             className="text-center mt-8 pt-6 border-t border-white/20"
             style={{

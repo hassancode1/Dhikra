@@ -1,8 +1,14 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
+  "name": "dhikr-reminder",
+  "description": "A Chrome extension that reminds you with dhikr throughout the day",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/dhikr-reminder"
+  },
   "type": "module",
   "scripts": {
     "dev": "wxt",

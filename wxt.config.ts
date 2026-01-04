@@ -13,10 +13,11 @@ export default defineConfig({
     },
   }),
   manifest: {
-    permissions: ["activeTab", "storage", "tabs", "scripting"],
+    permissions: ["activeTab", "storage", "tabs", "scripting", "alarms"],
     name: "Dhikr Reminder",
     description:
       "A Chrome extension that reminds you with dhikr throughout the day",
+    version: "1.0.0",
     icons: { 32: "icon/icon32.png" },
   },
 });

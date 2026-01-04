@@ -1,13 +1,13 @@
 # Dhikr Reminder 🌙
 
-A beautiful Chrome extension that displays Islamic dhikr (remembrance) reminders throughout your day. Get gentle reminders with beautiful Arabic text and English translations from the Quran and Hadith, helping you maintain mindfulness and spiritual connection while browsing.
+A beautiful Chrome extension that displays Islamic dhikr (remembrance) reminders throughout your day. Get gentle reminders with transliterated dhikr and English translations from the Quran and Hadith, helping you maintain mindfulness and spiritual connection while browsing.
 
 ## ✨ Features
 
-- **Beautiful Modal Design**: Large, readable Arabic text with elegant English translations
+- **Beautiful Modal Design**: Large, readable transliterated dhikr with elegant English translations
+- **50 Curated Dhikr**: Collection of the most important dhikr from Quran and Hadith
 - **Customizable Intervals**: Choose how often reminders appear (every 10 minutes to every 12 hours)
 - **Configurable Duration**: Set how long each reminder stays visible (in seconds)
-- **Real-time Quranic Verses**: Fetches random verses from the Quran API with fallback to curated dhikr
 - **Multi-tab Support**: Reminders appear on all your open tabs
 - **Easy Controls**: Start, stop, or change settings anytime with a simple popup interface
 - **Persistent Scheduling**: Uses browser alarms API for reliable reminders across browser sessions
@@ -116,9 +116,15 @@ Customize reminder intervals from:
 
 Each reminder displays for a configurable duration (default: 10 seconds).
 
+## 👤 Author
+
+**Your Name**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- Email: your.email@example.com
+
 ## 📝 License
 
-This project is private and proprietary.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🤝 Contributing
 
